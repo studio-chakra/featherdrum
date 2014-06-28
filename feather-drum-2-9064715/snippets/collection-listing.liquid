@@ -1,0 +1,44 @@
+{% assign using_link_list = false %}
+
+{% if collection-listing != '' and linklists[collection-listing].handle == collection-listing and linklists[collection-listing].links.size > 0 %}
+  {% assign using_link_list = true %}
+{% endif %}
+
+<div class="container">
+  <div class="page-header cf">
+    <h1 class="majortitle">
+      <h1>{% if using_link_list %}{{ linklists[collection-listing].title }}{% else %}Collections{% endif %}</h1>
+    </h1>
+  </div>
+</div>
+
+
+<div class="container">
+  {% if using_link_list %}
+  
+    <div class="collection-listing">
+      {% for link in linklists[collection-listing].links %}
+        {% if link.type == 'collection_link' %}
+          {% assign collection = link.object %}
+          {% include 'collection-block' %}
+        {% endif %}
+      {% endfor %}
+      {% include 'product-list-placeholders' %}
+  	</div>
+  
+  {% else %}
+  
+  	{% paginate collections by 20 %}
+    <div class="collection-listing">
+    {% for collection in collections %}
+      {% unless collection.handle == 'all' or collection.handle contains 'frontpage' %}
+      	{% include 'collection-block' %}
+      {% endunless %}
+    {% endfor %}
+    {% include 'product-list-placeholders' %}
+  	</div>
+    <div class="pagination-row">{% include 'pagination-control' %}</div>
+    {% endpaginate %}
+  
+  {% endif %}
+</div>
